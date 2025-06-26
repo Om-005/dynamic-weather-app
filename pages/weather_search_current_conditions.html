@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Search & Current Conditions - Weather Forecast App</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script src="../config/config.js"></script>
+    <script src="../services/weatherService.js"></script>
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fweatherfo6004back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.5"></script>
+</head>
+<body class="bg-background min-h-screen">
+    <!-- Global Header -->
+    <header class="bg-surface shadow-floating sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- App Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 10.5C21 10.5 20.5 10 19.5 10C18.5 10 18 10.5 18 10.5V12.5C18 12.5 18.5 13 19.5 13C20.5 13 21 12.5 21 12.5V10.5ZM3 10.5V12.5C3 12.5 3.5 13 4.5 13C5.5 13 6 12.5 6 12.5V10.5C6 10.5 5.5 10 4.5 10C3.5 10 3 10.5 3 10.5ZM12 18C10.9 18 10 18.9 10 20C10 21.1 10.9 22 12 22C13.1 22 14 21.1 14 20C14 18.9 13.1 18 12 18ZM5.99 4.58C6.39 4.18 6.39 3.54 5.99 3.14C5.59 2.74 4.95 2.74 4.55 3.14L3.84 3.85C3.44 4.25 3.44 4.89 3.84 5.29C4.24 5.69 4.88 5.69 5.28 5.29L5.99 4.58ZM18.01 4.58L18.72 5.29C19.12 5.69 19.76 5.69 20.16 5.29C20.56 4.89 20.56 4.25 20.16 3.85L19.45 3.14C19.05 2.74 18.41 2.74 18.01 3.14C17.61 3.54 17.61 4.18 18.01 4.58ZM5.99 19.42L5.28 18.71C4.88 18.31 4.24 18.31 3.84 18.71C3.44 19.11 3.44 19.75 3.84 20.15L4.55 20.86C4.95 21.26 5.59 21.26 5.99 20.86C6.39 20.46 6.39 19.82 5.99 19.42ZM18.01 19.42C17.61 19.82 17.61 20.46 18.01 20.86C18.41 21.26 19.05 21.26 19.45 20.86L20.16 20.15C20.56 19.75 20.56 19.11 20.16 18.71C19.76 18.31 19.12 18.31 18.72 18.71L18.01 19.42Z"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-xl font-semibold text-text-primary">WeatherApp</h1>
+                </div>
+                
+                <!-- Settings Icon -->
+                <button class="touch-target rounded-lg hover:bg-secondary-100 transition-colors duration-150" aria-label="Settings">
+                    <svg class="w-6 h-6 text-secondary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Search Section -->
+        <section class="mb-8">
+            <div class="max-w-md mx-auto">
+                <div class="relative">
+                    <input type="text" id="citySearch" placeholder="Enter city name" class="input-field w-full px-4 py-3 pr-12 rounded-lg bg-surface text-text-primary placeholder-secondary-400 focus:ring-2 focus:ring-primary focus:border-primary" aria-label="City search input" />
+                    <button id="searchBtn" class="absolute right-2 top-1/2 transform -translate-y-1/2 touch-target bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors duration-150" aria-label="Search weather">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Error Message -->
+                <div id="errorMessage" class="hidden mt-3 p-3 bg-error-100 border border-error-500 rounded-lg">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-error-500 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        <p class="text-error-600 text-sm" id="errorText">City not found. Please try again.</p>
+                    </div>
+                    <button id="retryBtn" class="mt-2 text-error-600 text-sm underline hover:no-underline">
+                        Try again
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <section id="loadingState" class="hidden">
+            <div class="weather-card rounded-xl p-6 mb-6">
+                <div class="animate-pulse">
+                    <div class="h-6 bg-secondary-200 rounded w-1/3 mb-4"></div>
+                    <div class="h-16 bg-secondary-200 rounded w-1/2 mb-4"></div>
+                    <div class="h-4 bg-secondary-200 rounded w-2/3 mb-6"></div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="h-20 bg-secondary-200 rounded"></div>
+                        <div class="h-20 bg-secondary-200 rounded"></div>
+                        <div class="h-20 bg-secondary-200 rounded"></div>
+                        <div class="h-20 bg-secondary-200 rounded"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Current Weather Display -->
+        <section id="weatherDisplay" class="hidden fade-in">
+            <!-- Main Weather Card -->
+            <div class="weather-card rounded-xl p-6 mb-6">
+                <div class="text-center mb-6">
+                    <h2 id="cityName" class="text-2xl font-semibold text-text-primary mb-2">New York, NY</h2>
+                    <div class="flex items-center justify-center space-x-4">
+                        <img id="weatherIcon" src="https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?q=80&w=1000&auto=format&fit=crop" alt="Weather condition" class="w-20 h-20 object-cover rounded-lg" onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; this.onerror=null;" />
+                        <div>
+                            <div id="currentTemp" class="text-5xl font-bold text-text-primary font-mono">22°C</div>
+                            <div id="weatherDesc" class="text-lg text-secondary-500 capitalize">Partly cloudy</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Current Conditions Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <!-- Feels Like -->
+                    <div class="bg-secondary-50 rounded-lg p-4 text-center">
+                        <div class="flex items-center justify-center mb-2">
+                            <svg class="w-6 h-6 text-accent-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 10.5C21 10.5 20.5 10 19.5 10C18.5 10 18 10.5 18 10.5V12.5C18 12.5 18.5 13 19.5 13C20.5 13 21 12.5 21 12.5V10.5ZM3 10.5V12.5C3 12.5 3.5 13 4.5 13C5.5 13 6 12.5 6 12.5V10.5C6 10.5 5.5 10 4.5 10C3.5 10 3 10.5 3 10.5Z"/>
+                            </svg>
+                        </div>
+                        <div class="text-sm text-secondary-500 mb-1">Feels like</div>
+                        <div id="feelsLike" class="text-lg font-semibold text-text-primary font-mono">25°C</div>
+                    </div>
+
+                    <!-- Humidity -->
+                    <div class="bg-secondary-50 rounded-lg p-4 text-center">
+                        <div class="flex items-center justify-center mb-2">
+                            <svg class="w-6 h-6 text-primary-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12,2A1,1 0 0,1 13,3V4.3L15.39,2.68C15.72,2.47 16.15,2.5 16.43,2.76L17.76,4.09C18.04,4.35 18.07,4.78 17.86,5.11L16.27,7.5H17.5A1,1 0 0,1 18.5,8.5V10A1,1 0 0,1 17.5,11H16.27L17.86,13.39C18.07,13.72 18.04,14.15 17.76,14.43L16.43,15.76C16.15,16.04 15.72,16.07 15.39,15.86L13,14.27V15.5A1,1 0 0,1 12,16.5H10A1,1 0 0,1 9,15.5V14.27L6.61,15.86C6.28,16.07 5.85,16.04 5.57,15.76L4.24,14.43C3.96,14.15 3.93,13.72 4.14,13.39L5.73,11H4.5A1,1 0 0,1 3.5,10V8.5A1,1 0 0,1 4.5,7.5H5.73L4.14,5.11C3.93,4.78 3.96,4.35 4.24,4.09L5.57,2.76C5.85,2.5 6.28,2.47 6.61,2.68L9,4.3V3A1,1 0 0,1 10,2H12Z"/>
+                            </svg>
+                        </div>
+                        <div class="text-sm text-secondary-500 mb-1">Humidity</div>
+                        <div id="humidity" class="text-lg font-semibold text-text-primary font-mono">65%</div>
+                    </div>
+
+                    <!-- Wind Speed -->
+                    <div class="bg-secondary-50 rounded-lg p-4 text-center">
+                        <div class="flex items-center justify-center mb-2">
+                            <svg class="w-6 h-6 text-secondary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5C7 10.1193 8.11929 9 9.5 9C10.8807 9 12 10.1193 12 11.5C12 12.8807 10.8807 14 9.5 14H2M17 8.5C17 7.11929 18.1193 6 19.5 6C20.8807 6 22 7.11929 22 8.5C22 9.88071 20.8807 11 19.5 11H2M12 18.5C12 17.1193 13.1193 16 14.5 16C15.8807 16 17 17.1193 17 18.5C17 19.8807 15.8807 21 14.5 21H2"/>
+                            </svg>
+                        </div>
+                        <div class="text-sm text-secondary-500 mb-1">Wind</div>
+                        <div id="windSpeed" class="text-lg font-semibold text-text-primary font-mono">12 km/h</div>
+                    </div>
+
+                    <!-- Visibility -->
+                    <div class="bg-secondary-50 rounded-lg p-4 text-center">
+                        <div class="flex items-center justify-center mb-2">
+                            <svg class="w-6 h-6 text-success-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </div>
+                        <div class="text-sm text-secondary-500 mb-1">Visibility</div>
+                        <div id="visibility" class="text-lg font-semibold text-text-primary font-mono">10 km</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button id="refreshBtn" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors duration-150 touch-target">
+                    <div class="flex items-center justify-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        <span>Refresh</span>
+                    </div>
+                </button>
+                <button id="forecastBtn" class="px-6 py-3 bg-secondary-100 text-secondary-600 rounded-lg hover:bg-secondary-200 transition-colors duration-150 touch-target">
+                    <div class="flex items-center justify-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <span>7-Day Forecast</span>
+                    </div>
+                </button>
+            </div>
+        </section>
+
+        <!-- 7-Day Forecast Section -->
+        <section id="forecastSection" class="hidden fade-in mt-8">
+            <div class="weather-card rounded-xl p-6">
+                <h3 class="text-xl font-semibold text-text-primary mb-4 text-center">7-Day Forecast</h3>
+                <div id="forecastContainer" class="space-y-3">
+                    <!-- Forecast items will be dynamically inserted here -->
+                </div>
+                <div class="text-center mt-4">
+                    <button id="hideForecastBtn" class="px-4 py-2 bg-secondary-100 text-secondary-600 rounded-lg hover:bg-secondary-200 transition-colors duration-150 touch-target">
+                        Hide Forecast
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 -z-10 opacity-5">
+        <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="weatherPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <circle cx="10" cy="10" r="2" fill="currentColor" opacity="0.1"/>
+                    <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="0.5" opacity="0.05"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#weatherPattern)"/>
+        </svg>
+    </div>
+
+    <script>
+        // Initialize Weather Service
+        const weatherService = new WeatherService();
+        let currentCity = '';
+        let currentForecastData = null;
+
+        // DOM elements
+        const citySearchInput = document.getElementById('citySearch');
+        const searchBtn = document.getElementById('searchBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const retryBtn = document.getElementById('retryBtn');
+        const loadingState = document.getElementById('loadingState');
+        const weatherDisplay = document.getElementById('weatherDisplay');
+        const forecastSection = document.getElementById('forecastSection');
+        const forecastContainer = document.getElementById('forecastContainer');
+        const forecastBtn = document.getElementById('forecastBtn');
+        const hideForecastBtn = document.getElementById('hideForecastBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+
+        // Weather display elements
+        const cityName = document.getElementById('cityName');
+        const currentTemp = document.getElementById('currentTemp');
+        const weatherDesc = document.getElementById('weatherDesc');
+        const weatherIcon = document.getElementById('weatherIcon');
+        const feelsLike = document.getElementById('feelsLike');
+        const humidity = document.getElementById('humidity');
+        const windSpeed = document.getElementById('windSpeed');
+        const visibility = document.getElementById('visibility');
+
+        // Search functionality
+        async function searchWeather() {
+            const city = citySearchInput.value.trim();
+            if (!city) {
+                showError('Please enter a city name.');
+                return;
+            }
+
+            if (!weatherService.validateCityName(city)) {
+                showError('Please enter a valid city name.');
+                return;
+            }
+
+            hideError();
+            showLoading();
+            hideForecast();
+
+            try {
+                const weatherData = await weatherService.getCurrentWeather(city);
+                currentCity = city;
+                displayWeather(weatherData);
+                hideLoading();
+            } catch (error) {
+                console.error('Weather fetch error:', error);
+                showError(error.message);
+                hideLoading();
+            }
+        }
+
+        // Load forecast data
+        async function loadForecast() {
+            if (!currentCity) {
+                showError('Please search for a city first.');
+                return;
+            }
+
+            try {
+                showLoading();
+                const forecastData = await weatherService.getWeatherForecast(currentCity);
+                currentForecastData = forecastData;
+                displayForecast(forecastData);
+                hideLoading();
+            } catch (error) {
+                console.error('Forecast fetch error:', error);
+                showError(error.message);
+                hideLoading();
+            }
+        }
+
+        // Display current weather
+        function displayWeather(data) {
+            cityName.textContent = data.city;
+            currentTemp.textContent = `${data.temperature}°C`;
+            weatherDesc.textContent = data.description;
+            weatherIcon.src = data.icon;
+            weatherIcon.alt = data.description;
+            feelsLike.textContent = `${data.feelsLike}°C`;
+            humidity.textContent = `${data.humidity}%`;
+            windSpeed.textContent = `${data.windSpeed} km/h`;
+            visibility.textContent = `${data.visibility} km`;
+
+            weatherDisplay.classList.remove('hidden');
+        }
+
+        // Display 7-day forecast
+        function displayForecast(data) {
+            forecastContainer.innerHTML = '';
+            
+            data.forecast.forEach((day, index) => {
+                const forecastItem = document.createElement('div');
+                forecastItem.className = 'flex items-center justify-between p-3 rounded-lg bg-secondary-50 hover:bg-secondary-100 transition-colors duration-150';
+                
+                forecastItem.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <img src="${day.icon}" alt="${day.description}" class="w-12 h-12 object-cover rounded" onerror="this.src='https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3'; this.onerror=null;" />
+                        <div>
+                            <div class="font-semibold text-text-primary">${index === 0 ? 'Today' : day.shortDate}</div>
+                            <div class="text-sm text-secondary-500 capitalize">${day.description}</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-semibold text-text-primary font-mono">${day.maxTemp}°/${day.minTemp}°</div>
+                        <div class="text-sm text-secondary-500">${day.avgHumidity}% • ${day.avgWindSpeed} km/h</div>
+                    </div>
+                `;
+                
+                forecastContainer.appendChild(forecastItem);
+            });
+            
+            forecastSection.classList.remove('hidden');
+        }
+
+        // Refresh current weather
+        async function refreshWeather() {
+            if (!currentCity) {
+                await searchWeather();
+                return;
+            }
+
+            hideError();
+            showLoading();
+
+            try {
+                const weatherData = await weatherService.getCurrentWeather(currentCity);
+                displayWeather(weatherData);
+                hideLoading();
+            } catch (error) {
+                console.error('Weather refresh error:', error);
+                showError(error.message);
+                hideLoading();
+            }
+        }
+
+        // UI Helper functions
+        function showLoading() {
+            loadingState.classList.remove('hidden');
+            weatherDisplay.classList.add('hidden');
+        }
+
+        function hideLoading() {
+            loadingState.classList.add('hidden');
+        }
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.remove('hidden');
+            weatherDisplay.classList.add('hidden');
+        }
+
+        function hideError() {
+            errorMessage.classList.add('hidden');
+        }
+
+        function hideForecast() {
+            forecastSection.classList.add('hidden');
+            currentForecastData = null;
+        }
+
+        // Event listeners
+        searchBtn.addEventListener('click', searchWeather);
+        citySearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchWeather();
+            }
+        });
+
+        retryBtn.addEventListener('click', () => {
+            hideError();
+            citySearchInput.focus();
+        });
+
+        refreshBtn.addEventListener('click', refreshWeather);
+        forecastBtn.addEventListener('click', loadForecast);
+        hideForecastBtn.addEventListener('click', hideForecast);
+
+        // Initialize with configuration check
+        document.addEventListener('DOMContentLoaded', async () => {
+            const configStatus = weatherService.getConfigurationStatus();
+            
+            if (!configStatus.isConfigured) {
+                showError(`${configStatus.message}\n\nGet your free API key from: ${configStatus.helpUrl}`);
+            } else {
+                // Try to load weather for default city
+                try {
+                    citySearchInput.value = window.CONFIG?.DEFAULT_CITY || 'New York';
+                    await searchWeather();
+                } catch (error) {
+                    console.log('Could not load default weather data:', error.message);
+                }
+            }
+        });
+
+        // Handle image loading errors
+        document.addEventListener('error', (e) => {
+            if (e.target.tagName === 'IMG') {
+                e.target.src = 'https://images.unsplash.com/photo-1584824486509-112e4181ff6b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+                e.target.onerror = null;
+            }
+        }, true);
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>
